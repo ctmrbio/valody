@@ -53,7 +53,6 @@ args = parser.parse_args()
 
 
 ## Additional things to check:
-# Are all CST included in either eubiosis or dysbiosis?
 # If subtype, is eu/dys defined?
 # Are all samples in the metadata also in the VALENCIA data?
 
@@ -114,6 +113,18 @@ if(set(all_cst) != {"I", "II", "III", "IV-A", "IV-B", "IV-C", "IV-D", "V"}):
     sys.exit('The following CST must be included: "I", "II", "III", "IV-A", "IV-B", "IV-C", "IV-D", "V"')
 if(len(set(eu_cst).intersection(dys_cst))>0):
     sys.exit("A CST cannot be eubiotic and dysbiotic at once")    
+
+# test if there are samples without metadata or without Valencia
+# if so, warn and proceed
+all_meta_ids = set(metadata["sampleID"])
+all_val_ids = set(valencia["sampleID"])
+only_meta = all_meta_ids.difference(all_val_ids)
+only_val = all_val_ids.difference(all_meta_ids)
+if(len(only_meta) > 0):
+    print(" ".join(["Warning:", str(len(only_meta)), "sampleIDs in metadata not found in the Valencia table"]))
+if(len(only_val) > 0):
+    print(" ".join(["Warning:", str(len(only_val)), "sampleIDs in Valencia output not found in the metadata"]))
+
 
 
 allsubjects = metadata["subjectID"].unique()
