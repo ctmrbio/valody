@@ -2,7 +2,7 @@
 """ Assigns vaginal dynamic categories
 based on VALENCIA output results """
 __author__ = "Luisa W. Hugerth"
-__date__ = "2023"
+__date__ = "2023-04"
 __version__ = "0.1"
 
 #import libraries
@@ -10,21 +10,33 @@ try:
     import pandas as pd
 except:
     print("Required package pandas not available")
-    #exit()
+    exit()
 
 try:
     import argparse
 except:
     print("Required package argparse not available")
-    #exit()
+    exit()
 
 try:
     from collections import Counter
 except:
     print("Required package collections not available")
+    exit()
 
-import warnings
+try:
+    import sys
+except:
+    print("Required package sys not available")
+    exit()
+
+try:
+    import warnings
+except:
+    print("Required package warnings not available")
+
 warnings.filterwarnings('ignore')
+
 
 
 #setting up expected arguments and help messages
@@ -35,7 +47,7 @@ parser.add_argument("-m", "--metadata", help="CSV file with 'sampleID,subjectID,
 parser.add_argument("-o","--output", help="Output csv file prefix", default="SNAPPYNAME.out.csv")
 parser.add_argument("-s", "--subtypes", help="Use CST subtypes instead of main types; requires eubiosis and/or dysbiosis argument", 
                     action='store_true')
-parser.add_argument("-d", "--dysbosis", help="comma-separated list of CST or sub-CST considered dysbiotic", default="III,IV")
+parser.add_argument("-d", "--dysbiosis", help="comma-separated list of CST or sub-CST considered dysbiotic", default="III,IV-A,IV-B,IV-C,IV-D")
 parser.add_argument("-e", "--eubiosis", help="comma-separated list of CST or sub-CST considered eubiotic", default="I,II,V")     
 args = parser.parse_args()
 
@@ -63,13 +75,13 @@ except:
     
 ## This function assigns for one individual at a time
 
-def assign_dynamics(valencia, metadata, subjID):
+def assign_dynamics(valencia, metadata, subjID, eubiotic, dysbiotic):
     allids = set(metadata.set_index(["subjectID"]).loc[(subjID)]["sampleID"])
     samples_per_subject = valencia[valencia["sampleID"].isin(allids)]
     counts_subject = samples_per_subject.groupby("CST")[["sampleID"]].count()
   
-    eubio = counts_subject[counts_subject.index.isin(["I", "II", "V"])].sum()
-    dysbio = counts_subject[counts_subject.index.isin(["III", "IV-A", "IV-B", "IV-C", "IV-D"])].sum()
+    eubio = counts_subject[counts_subject.index.isin(eubiotic)].sum()
+    dysbio = counts_subject[counts_subject.index.isin(dysbiotic)].sum()
     eu_rat = float(eubio / (eubio+dysbio))
     dys_rat = float(dysbio / (eubio+dysbio))
 
@@ -83,8 +95,8 @@ def assign_dynamics(valencia, metadata, subjID):
         counts_subject = samples_per_subject.groupby("CST")[["sampleID"]].count()
         counts_subject
 
-        eubio = counts_subject[counts_subject.index.isin(["I", "II", "V"])].sum()
-        dysbio = counts_subject[counts_subject.index.isin(["III", "IV-A", "IV-B", "IV-C", "IV-D"])].sum()
+        eubio = counts_subject[counts_subject.index.isin(eubiotic)].sum()
+        dysbio = counts_subject[counts_subject.index.isin(dysbiotic)].sum()
         eu_rat = float(eubio / (eubio+dysbio))
 
         if eu_rat >= 0.8:
@@ -93,11 +105,22 @@ def assign_dynamics(valencia, metadata, subjID):
             return("Unstable")    
             
 
+# test if all CST are accounted for; only implemented for main CST
+eu_cst = args.eubiosis.split(sep=",")
+dys_cst = args.dysbiosis.split(sep=",")
+all_cst = eu_cst + dys_cst
+#print(all_cst)
+if(set(all_cst) != {"I", "II", "III", "IV-A", "IV-B", "IV-C", "IV-D", "V"}):
+    sys.exit('The following CST must be included: "I", "II", "III", "IV-A", "IV-B", "IV-C", "IV-D", "V"')
+if(len(set(eu_cst).intersection(dys_cst))>0):
+    sys.exit("A CST cannot be eubiotic and dysbiotic at once")    
+
+
 allsubjects = metadata["subjectID"].unique()
 dynamics = list()
 for i in range(len(allsubjects)):
     subj = allsubjects[i]
-    dynamic = assign_dynamics(valencia, metadata, subj)
+    dynamic = assign_dynamics(valencia, metadata, subj, eu_cst, dys_cst)
     dynamics.append(dynamic)
         
 to_print = pd.DataFrame(dynamics, allsubjects, columns = ["Dynamics"])
