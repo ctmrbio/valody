@@ -51,23 +51,22 @@ def parse_args():
         epilog=f"Version v{__version__}",
     )
 
-    parser.add_argument("-i", "--input", 
-        help="Path to VALENCIA output", required=True)
+    parser.add_argument("-i", "--input", required=True ,
+        help="Path to VALENCIA output.")
     parser.add_argument( "-m", "--metadata",
         help="CSV file with 'sampleID,subjectID,menses', where menses takes 1 for yes and 0 for no")
     parser.add_argument( "-o", "--output", 
         default="valody.out.csv",
-        help="Output csv file prefix")
+        help="Output filename [%(default)s].")
     parser.add_argument("-s", "--subtypes", action="store_true",
         default=False,
         help="Use CST subtypes instead of main types; requires eubiosis and dysbiosis argument")
     parser.add_argument("-d", "--dysbiosis",
         default="III,IV-A,IV-B,IV-C",
-        help="comma-separated list of CST or sub-CST considered dysbiotic")
+        help="Comma-separated list of CST or sub-CST considered dysbiotic [%(default)s].")
     parser.add_argument("-e", "--eubiosis",
         default="I,II,V",
-        help="comma-separated list of CST or sub-CST considered eubiotic",
-    )
+        help="Comma-separated list of CST or sub-CST considered eubiotic [%(default)s].")
 
     if len(sys.argv) < 2:
         parser.print_help()
