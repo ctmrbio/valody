@@ -2,9 +2,9 @@
 """VALODY: Assign vaginal time-series into dynamic categories based on VALENCIA
 output results.
 """
-__author__ = "Luisa W. Hugerth"
+__author__ = "Luisa W. Hugerth, Fredrik Boulund"
 __date__ = "2023-04"
-__version__ = "0.1"
+__version__ = "0.2"
 
 from pathlib import Path
 import argparse
@@ -163,7 +163,8 @@ def main(input, metadata, eubiosis, dysbiosis, subtypes):
         valencia = pd.read_csv(input, sep=",")
     except Exception as e:
         print(e)
-        print(f"ERROR: Please provide a valid path to the VALENCIA output using -i")
+        print(f"ERROR: Unable to load VALENCIA output."
+              " Please provide a valid path to VALENCIA output using -i")
         exit(1)
 
     # Step 2: read the metadata file
@@ -171,7 +172,8 @@ def main(input, metadata, eubiosis, dysbiosis, subtypes):
         metadata = pd.read_csv(metadata, sep=",")
     except Exception as e:
         print(e)
-        print(f"ERROR: Please provide a valid path to the metadata using -m")
+        print(f"ERROR: Unable to load metadata."
+              " Please provide a valid path to the metadata using -m")
         exit(1)
 
     eu_cst, dys_cst = validate_csts(eubiosis, dysbiosis, subtypes)
@@ -185,7 +187,7 @@ def main(input, metadata, eubiosis, dysbiosis, subtypes):
         dynamics.append(dynamic)
 
     valody_classifications = pd.DataFrame(dynamics, allsubjects, columns=["Dynamics"])
-    valody_classifications.to_csv(args.output, index_label="SampleID", sep=",")
+    valody_classifications.to_csv(args.output, index_label="subjectID", sep=",")
 
 
 if __name__ == "__main__":
