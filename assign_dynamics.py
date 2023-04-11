@@ -19,6 +19,31 @@ except ImportError as e:
 
 warnings.filterwarnings("ignore")
 
+ALL_CSTs = {
+    "I",
+    "II",
+    "III",
+    "IV-A",
+    "IV-B",
+    "IV-C",
+    "V",
+}
+ALL_SUBTYPE_CSTs = {
+    "I-A",
+    "I-B",
+    "II-A",
+    "II-B",
+    "III-A",
+    "III-B",
+    "IV-A",
+    "IV-B",
+    "IV-C0",
+    "IV-C1",
+    "IV-C2",
+    "IV-C3",
+    "IV-C4",
+    "V",
+}
 
 def parse_args():
     parser = argparse.ArgumentParser(
