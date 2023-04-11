@@ -57,7 +57,7 @@ def parse_args():
         help="CSV file with 'sampleID,subjectID,menses', where menses takes 1 for yes and 0 for no")
     parser.add_argument( "-o", "--output", 
         default="valody.out.csv",
-        help="Output filename [%(default)s].")
+        help="Output csv filename [%(default)s].")
     parser.add_argument("-s", "--subtypes", action="store_true",
         default=False,
         help="Use CST subtypes instead of main types; requires eubiosis and dysbiosis argument")
@@ -201,3 +201,4 @@ if __name__ == "__main__":
         args.dysbiosis,
         args.subtypes,
     )
+
