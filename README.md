@@ -22,7 +22,7 @@ The user must therefore define:
 
 Empirically, we find that the last 2-3 days of the luteal phase should be
 included in the "perimenstrual" period, so that in a 28 day cycle, days 1-8 as
-well as 26-28 are considered perimentrual and days 9-25 as "central". 
+well as 26-28 are considered perimenstrual and days 9-25 as "central". 
 
 # In practice
 The inputs to valody are the output of
@@ -37,11 +37,11 @@ file with the format
 | sampleN  | subjM     | 0      |
 
 Where sample IDs should be identical to the ones in the VALENCIA output file
-and menses should be marked as `1` for perimentrual samples and `0` otherwise.
+and menses should be marked as `1` for perimenstrual samples and `0` otherwise.
 
 VALODY can then be run as:
 
-    valody -i INPUT -m METADATA -o OUTPUT [-d DYSBIOSIS] [-e EUBIOSIS] [-s] 
+    ./valody.py -i INPUT -m METADATA -o OUTPUT [-d DYSBIOSIS] [-e EUBIOSIS] [-s] 
 
     -i INPUT, --input INPUT, path to VALENCIA output
     -m METADATA, --metadata METADATA, CSV file with 'sampleID,subjectID,menses', where menses takes 1 for yes and 0 for no
