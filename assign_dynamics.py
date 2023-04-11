@@ -6,7 +6,7 @@ __author__ = "Luisa W. Hugerth"
 __date__ = "2023-04"
 __version__ = "0.1"
 
-from collections import Counter
+from pathlib import Path
 import argparse
 import sys
 import warnings
