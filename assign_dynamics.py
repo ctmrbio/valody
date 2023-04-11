@@ -1,39 +1,21 @@
 #!/usr/bin/env python3
-""" Assigns vaginal dynamic categories
-based on VALENCIA output results """
+"""VALODY: Assign vaginal time-series into dynamic categories based on VALENCIA
+output results.
+"""
 __author__ = "Luisa W. Hugerth"
 __date__ = "2023-04"
 __version__ = "0.1"
 
-# import libraries
+from collections import Counter
+import argparse
+import sys
+import warnings
+
 try:
     import pandas as pd
-except:
-    print("Required package pandas not available")
-    exit()
-
-try:
-    import argparse
-except:
-    print("Required package argparse not available")
-    exit()
-
-try:
-    from collections import Counter
-except:
-    print("Required package collections not available")
-    exit()
-
-try:
-    import sys
-except:
-    print("Required package sys not available")
-    exit()
-
-try:
-    import warnings
-except:
-    print("Required package warnings not available")
+except ImportError as e:
+    print("Required package pandas not available:", e)
+    exit(1)
 
 warnings.filterwarnings("ignore")
 
