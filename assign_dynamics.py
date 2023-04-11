@@ -20,64 +20,39 @@ except ImportError as e:
 warnings.filterwarnings("ignore")
 
 
-# setting up expected arguments and help messages
-parser = argparse.ArgumentParser(
-    description="valody is a tool to classify vaginal time-series into dynamic categories"
-)
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description=f"{__doc__} Copyright (c) {__author__}, {__date__}",
+        epilog=f"Version v{__version__}",
+    )
 
-parser.add_argument("-i", "--input", help="Path to VALENCIA output", required=True)
-parser.add_argument(
-    "-m",
-    "--metadata",
-    help="CSV file with 'sampleID,subjectID,menses', where menses takes 1 for yes and 0 for no",
-)
-parser.add_argument(
-    "-o", "--output", help="Output csv file prefix", default="valody.out.csv"
-)
-parser.add_argument(
-    "-s",
-    "--subtypes",
-    help="Use CST subtypes instead of main types; requires eubiosis and dysbiosis argument",
-    action="store_true",
-    default=False,
-)
-parser.add_argument(
-    "-d",
-    "--dysbiosis",
-    help="comma-separated list of CST or sub-CST considered dysbiotic",
-    default="III,IV-A,IV-B,IV-C",
-)
-parser.add_argument(
-    "-e",
-    "--eubiosis",
-    help="comma-separated list of CST or sub-CST considered eubiotic",
-    default="I,II,V",
-)
-args = parser.parse_args()
+    parser.add_argument("-i", "--input", 
+        help="Path to VALENCIA output", required=True)
+    parser.add_argument( "-m", "--metadata",
+        help="CSV file with 'sampleID,subjectID,menses', where menses takes 1 for yes and 0 for no")
+    parser.add_argument( "-o", "--output", 
+        default="valody.out.csv",
+        help="Output csv file prefix")
+    parser.add_argument("-s", "--subtypes", action="store_true",
+        default=False,
+        help="Use CST subtypes instead of main types; requires eubiosis and dysbiosis argument")
+    parser.add_argument("-d", "--dysbiosis",
+        default="III,IV-A,IV-B,IV-C",
+        help="comma-separated list of CST or sub-CST considered dysbiotic")
+    parser.add_argument("-e", "--eubiosis",
+        default="I,II,V",
+        help="comma-separated list of CST or sub-CST considered eubiotic",
+    )
 
-
-## Additional things to check:
-# If subtype, is eu/dys defined?
-
-# Step 1: read the Valencia output and store type for each sample
-try:
-    valencia = pd.read_csv(args.input, sep=",")  # change to args.input when wrapping
-except:
-    print("Please provide a valid path to the VALENCIA output using -i")
-    exit()
-
-# Step 2: read the metadata file
-try:
-    metadata = pd.read_csv(
-        args.metadata, sep=","
-    )  # change to args.metadata when wrapping
-except:
-    print("Please provide a valid path to the metadata using -m")
-    exit()
-
+    if len(sys.argv) < 2:
+        parser.print_help()
+        exit(1)
+    
+    args = parser.parse_args()
 
 ## This function assigns for one individual at a time
 
+    return args
 
 def assign_dynamics(valencia, metadata, subjID, eubiotic, dysbiotic, subtypes):
     allids = set(metadata.set_index(["subjectID"]).loc[(subjID)]["sampleID"])
