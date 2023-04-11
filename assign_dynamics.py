@@ -39,11 +39,11 @@ warnings.filterwarnings('ignore')
 
 
 #setting up expected arguments and help messages
-parser = argparse.ArgumentParser(description="SNAPPYNAME is a tool to classify vaginal time-series into dynamic categories")
+parser = argparse.ArgumentParser(description="valody is a tool to classify vaginal time-series into dynamic categories")
 
 parser.add_argument("-i", "--input", help="Path to VALENCIA output",required=True)
 parser.add_argument("-m", "--metadata", help="CSV file with 'sampleID,subjectID,menses', where menses takes 1 for yes and 0 for no")
-parser.add_argument("-o","--output", help="Output csv file prefix", default="SNAPPYNAME.out.csv")
+parser.add_argument("-o","--output", help="Output csv file prefix", default="valody.out.csv")
 parser.add_argument("-s", "--subtypes", help="Use CST subtypes instead of main types; requires eubiosis and dysbiosis argument", 
                     action='store_true', default=False)
 parser.add_argument("-d", "--dysbiosis", help="comma-separated list of CST or sub-CST considered dysbiotic", default="III,IV-A,IV-B,IV-C")
