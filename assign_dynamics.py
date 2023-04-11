@@ -89,12 +89,12 @@ def assign_dynamics(valencia, metadata, subjID, eubiotic, dysbiotic, subtypes):
 
     eubio = counts_subject[counts_subject.index.isin(eubiotic)].sum()
     dysbio = counts_subject[counts_subject.index.isin(dysbiotic)].sum()
-    eu_rate = float(eubio / (eubio + dysbio))
-    dys_rate = float(dysbio / (eubio + dysbio))
+    eu_ratio = float(eubio / (eubio + dysbio))
+    dys_ratio = float(dysbio / (eubio + dysbio))
 
-    if eu_rate >= 0.8:
+    if eu_ratio >= 0.8:
         return "Constant eubiotic"
-    elif dys_rate >= 0.8:
+    elif dys_ratio >= 0.8:
         return "Constant dysbiotic"
     else:
         midcycle = set(
@@ -109,9 +109,9 @@ def assign_dynamics(valencia, metadata, subjID, eubiotic, dysbiotic, subtypes):
 
         eubio = counts_subject[counts_subject.index.isin(eubiotic)].sum()
         dysbio = counts_subject[counts_subject.index.isin(dysbiotic)].sum()
-        eu_rate = float(eubio / (eubio + dysbio))
+        eu_ratio = float(eubio / (eubio + dysbio))
 
-        if eu_rate >= 0.8:
+        if eu_ratio >= 0.8:
             return "Menses dysbiotic"
         else:
             return "Unstable"
