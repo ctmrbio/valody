@@ -19,7 +19,7 @@ except ImportError as e:
 
 warnings.filterwarnings("ignore")
 
-ALL_CSTs = {
+ALL_CSTs = [ 
     "I",
     "II",
     "III",
@@ -27,8 +27,8 @@ ALL_CSTs = {
     "IV-B",
     "IV-C",
     "V",
-}
-ALL_SUBTYPE_CSTs = {
+]
+ALL_SUBTYPE_CSTs = [
     "I-A",
     "I-B",
     "II-A",
@@ -43,7 +43,7 @@ ALL_SUBTYPE_CSTs = {
     "IV-C3",
     "IV-C4",
     "V",
-}
+]
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -130,11 +130,11 @@ def validate_csts(eubiosis, dysbiosis, subtypes=False):
         sys.exit(1)
 
     if subtypes:
-        if all_cst != ALL_SUBTYPE_CSTs:
+        if all_cst != set(ALL_SUBTYPE_CSTs):
             print(f"ERROR: When using subtypes, the following CSTs must be included: {ALL_SUBTYPE_CSTs}")
             sys.exit(1)
     else:
-        if all_cst != ALL_CSTs:
+        if all_cst != set(ALL_CSTs):
             print(f"ERROR: The following CST must be included: {ALL_CSTs}")
             sys.exit(1)
 
