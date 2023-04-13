@@ -4,7 +4,7 @@ output results.
 """
 __author__ = "Luisa W. Hugerth, Fredrik Boulund"
 __date__ = "2023-04"
-__version__ = "0.2"
+__version__ = "0.2.1"
 
 from pathlib import Path
 import argparse
@@ -129,16 +129,16 @@ def validate_csts(eubiosis, dysbiosis, subtypes=False):
 
     cst_both_eu_and_dys = eu_cst.intersection(dys_cst)
     if cst_both_eu_and_dys:
-        print(f"A CST cannot be eubiotic and dysbiotic at once: {cst_both_eu_and_dys}")
+        print(f"A CST cannot be eubiotic and dysbiotic at once: {sorted(cst_both_eu_and_dys)}")
         sys.exit(1)
 
     if subtypes:
         if all_cst != set(ALL_SUBTYPE_CSTs):
-            print(f"ERROR: When using subtypes, the following CSTs must be included: {ALL_SUBTYPE_CSTs}")
+            print(f"ERROR: When using subtypes, the following CSTs must be included: {sorted(ALL_SUBTYPE_CSTs)}")
             sys.exit(1)
     else:
         if all_cst != set(ALL_CSTs):
-            print(f"ERROR: The following CST must be included: {ALL_CSTs}")
+            print(f"ERROR: The following CST must be included: {sorted(ALL_CSTs)}")
             sys.exit(1)
 
     return eu_cst, dys_cst
