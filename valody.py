@@ -4,7 +4,7 @@ output results.
 """
 __author__ = "Luisa W. Hugerth, Fredrik Boulund"
 __date__ = "2023-04"
-__version__ = "0.2"
+__version__ = "0.2.1"
 
 from pathlib import Path
 import argparse
@@ -51,22 +51,25 @@ def parse_args():
         epilog=f"Version v{__version__}",
     )
 
-    parser.add_argument("-i", "--input", required=True ,
-        help="Path to VALENCIA output.")
-    parser.add_argument( "-m", "--metadata",
-        help="CSV file with 'sampleID,subjectID,menses', where menses takes 1 for yes and 0 for no")
+    parser.add_argument("-i", "--input", "--valencia-csv",
+            dest="valencia_csv", metavar="VALENCIA", required=True,
+            help="Path to VALENCIA output.")
+    parser.add_argument( "-m", "--metadata-csv",
+            help="Metadata CSV file with 'sampleID,subjectID,menses', where menses takes 1 for yes and 0 for no.")
     parser.add_argument( "-o", "--output", 
-        default="valody.out.csv",
-        help="Output csv filename [%(default)s].")
+            default="valody.out.csv",
+            help="Output csv filename [%(default)s].")
     parser.add_argument("-s", "--subtypes", action="store_true",
-        default=False,
-        help="Use CST subtypes instead of main types; requires eubiosis and dysbiosis argument")
+            default=False,
+            help="Use CST subtypes instead of main types; requires eubiosis and dysbiosis arguments "
+                 "and must define all of the following subtypes as either eubiosis or dysbiosis: "
+                 f"{', '.join(ALL_SUBTYPE_CSTs)}.")
     parser.add_argument("-d", "--dysbiosis",
-        default="III,IV-A,IV-B,IV-C",
-        help="Comma-separated list of CST or sub-CST considered dysbiotic [%(default)s].")
+            default="III,IV-A,IV-B,IV-C",
+            help="Comma-separated list of CST or sub-CST considered dysbiotic [%(default)s].")
     parser.add_argument("-e", "--eubiosis",
-        default="I,II,V",
-        help="Comma-separated list of CST or sub-CST considered eubiotic [%(default)s].")
+            default="I,II,V",
+            help="Comma-separated list of CST or sub-CST considered eubiotic [%(default)s].")
 
     if len(sys.argv) < 2:
         parser.print_help()
@@ -126,16 +129,16 @@ def validate_csts(eubiosis, dysbiosis, subtypes=False):
 
     cst_both_eu_and_dys = eu_cst.intersection(dys_cst)
     if cst_both_eu_and_dys:
-        print(f"A CST cannot be eubiotic and dysbiotic at once: {cst_both_eu_and_dys}")
+        print(f"A CST cannot be eubiotic and dysbiotic at once: {sorted(cst_both_eu_and_dys)}")
         sys.exit(1)
 
     if subtypes:
         if all_cst != set(ALL_SUBTYPE_CSTs):
-            print(f"ERROR: When using subtypes, the following CSTs must be included: {ALL_SUBTYPE_CSTs}")
+            print(f"ERROR: When using subtypes, the following CSTs must be included: {sorted(ALL_SUBTYPE_CSTs)}")
             sys.exit(1)
     else:
         if all_cst != set(ALL_CSTs):
-            print(f"ERROR: The following CST must be included: {ALL_CSTs}")
+            print(f"ERROR: The following CST must be included: {sorted(ALL_CSTs)}")
             sys.exit(1)
 
     return eu_cst, dys_cst
@@ -152,15 +155,15 @@ def check_sampleid_overlaps(metadata, valencia):
     only_meta = all_meta_ids.difference(all_val_ids)
     only_val = all_val_ids.difference(all_meta_ids)
     if len(only_meta) > 0:
-        print(f"WARNING: {len(only_meta)} sampleIDs in metadata not found in the Valencia table!")
+        print(f"WARNING: {len(only_meta)} sampleIDs in metadata not found in the VALENCIA table!")
     if len(only_val) > 0:
         print(f"WARNING: {len(only_val)} sampleIDs in VALENCIA output not found in the metadata!")
 
 
-def main(input, metadata, eubiosis, dysbiosis, subtypes):
+def main(valencia_csv, metadata_csv, eubiosis, dysbiosis, subtypes):
     # Step 1: read the Valencia output and store type for each sample
     try:
-        valencia = pd.read_csv(input, sep=",")
+        valencia = pd.read_csv(valencia_csv, sep=",")
     except Exception as e:
         print(e)
         print(f"ERROR: Unable to load VALENCIA output."
@@ -169,7 +172,7 @@ def main(input, metadata, eubiosis, dysbiosis, subtypes):
 
     # Step 2: read the metadata file
     try:
-        metadata = pd.read_csv(metadata, sep=",")
+        metadata = pd.read_csv(metadata_csv, sep=",")
     except Exception as e:
         print(e)
         print(f"ERROR: Unable to load metadata."
@@ -197,8 +200,8 @@ if __name__ == "__main__":
         print(f"WARNING: Overwriting output file: {args.output}")
 
     main(
-        args.input,
-        args.metadata,
+        args.valencia_csv,
+        args.metadata_csv,
         args.eubiosis,
         args.dysbiosis,
         args.subtypes,
