@@ -1,4 +1,5 @@
-# VALODY
+![logo](https://github.com/ctmrbio/valody/blob/main/Valody%20Logo.png)
+
 A tool to assign VAginaL DYnamic categories to individuals based on their
 [VALENCIA](https://github.com/ravel-lab/VALENCIA) CST assignments.
 
