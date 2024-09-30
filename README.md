@@ -4,7 +4,9 @@ A tool to assign VAginaL DYnamic categories to individuals based on their
 [VALENCIA](https://github.com/ravel-lab/VALENCIA) CST assignments.
 
 # Citation
-If using any part of this work, please cite "Hugerth LW, Krog MC et al, submitted"
+If using any part of this work, please cite:
+
+Hugerth, L.W., Krog, M.C., Vomstein, K. et al. _Defining Vaginal Community Dynamics: daily microbiome transitions, the role of menstruation, bacteriophages, and bacterial genes._ Microbiome 12, 153 (2024). https://doi.org/10.1186/s40168-024-01870-5
 
 # The theory
 Vaginal microbiomes are tightly linked to the menstrual cycle, through
